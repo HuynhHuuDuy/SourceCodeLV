@@ -183,9 +183,18 @@ namespace FPRDB.BLL
             }
 
         }
+
+        /// <summary>
+        /// Important! Calculate m (mass assignment) (phep gan khoi), calculate prob (A->B)
+        /// </summary>
+        /// <param name="discFS1">A</param>
+        /// <param name="discFS2">B</param>
+        /// <param name="rel"></param>
+        /// <returns></returns>
         public double interpreteForDiscFS(DiscreteFuzzySetBLL discFS1, DiscreteFuzzySetBLL discFS2, string rel)
         {
             double result = 0;
+            //calculate m (Phep gan khoi). 
             MassAssignmentBLL mass1 = new MassAssignmentBLL(discFS1);
             MassAssignmentBLL mass2 = new MassAssignmentBLL(discFS2);
             for (int i = 0; i < mass1.ProSubset.Count; i++)

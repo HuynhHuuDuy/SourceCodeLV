@@ -551,6 +551,14 @@ namespace FPRDB.BLL
             }
 
         }
+
+        /// <summary>
+        /// Important! Get set of fuzzy from library
+        /// </summary>
+        /// <param name="one"></param>
+        /// <param name="two"></param>
+        /// <param name="rel"></param>
+        /// <returns></returns>
         private static double CompareDisFS(object one, object two, string rel)
         {
             DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(one.ToString().Trim());
@@ -618,6 +626,15 @@ namespace FPRDB.BLL
                 return pro;
             }
         }
+
+        /// <summary>
+        /// Important! Compare prob, if type == fuzzy call function calculate prob
+        /// </summary>
+        /// <param name="valueOne"></param>
+        /// <param name="valueTwo"></param>
+        /// <param name="opratorStr"></param>
+        /// <param name="typename"></param>
+        /// <returns></returns>
         public double CompareTriple(object valueOne, string valueTwo, string opratorStr, string typename)
         {
             switch (typename)
@@ -765,6 +782,7 @@ namespace FPRDB.BLL
                             {
                                 for (int i = 0; i < countTripleOne; i++)
                                 {
+                                    //calculate prob(A-->B)
                                     double pro = this.CompareTriple(tuple.FproTriples[indexOne].Value[i].ToString().Trim(), valueTwo.Trim(), operaterStr, dataType.TypeName);
                                     if (pro != -1.0) // duyệt từng cặp xác xuất và so sánh
                                     {
@@ -884,6 +902,12 @@ namespace FPRDB.BLL
 
             return (L <= minProb && maxProb <= U); // trả về true nếu khoảng xác biểu thức chọn thỏa mãn xác xuất câu truy vấn
         }
+
+        /// <summary>
+        /// Function call other functions to calculate prob
+        /// </summary>
+        /// <param name="Str"></param>
+        /// <returns></returns>
         private bool ExpressionValue(string Str)
         {
             // Get Probabilistic Interval
@@ -959,6 +983,12 @@ namespace FPRDB.BLL
             }
             return V;
         }
+
+        /// <summary>
+        /// Check operator after calculate and return result.
+        /// </summary>
+        /// <param name="Str"></param>
+        /// <returns></returns>
         private static bool CalculateCondition(List<string> Str)
         {
             List<string> stack = new List<string>();
@@ -994,7 +1024,7 @@ namespace FPRDB.BLL
         }
 
         /// <summary>
-        /// Function return true satisfy
+        /// Important! Function return tuple match with query condition from relation table database
         /// </summary>
         /// <param name="tuple"></param>
         /// <returns></returns>

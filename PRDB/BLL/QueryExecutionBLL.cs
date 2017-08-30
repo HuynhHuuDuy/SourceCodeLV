@@ -782,6 +782,11 @@ namespace FPRDB.BLL
 
             return relation;
         }
+
+        /// <summary>
+        /// Important! Execute query
+        /// </summary>
+        /// <returns></returns>
         internal bool ExecuteQuery()
         {
             try

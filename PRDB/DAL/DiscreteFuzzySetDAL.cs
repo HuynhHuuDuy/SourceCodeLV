@@ -158,6 +158,7 @@ namespace FPRDB.DAL
             DiscreteFuzzySetBLL result = new DiscreteFuzzySetBLL(name);
             try
             {
+                //get library from 
                 string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + @"\lib\", "*.disFS");
                 foreach (var item in filePaths)
                 {

@@ -1839,7 +1839,7 @@
             this.CTMenuRelNode_DeleteRelation,
             this.CTMenuRelNode_RenameRelation});
             this.ContextMenu_RelationNode.Name = "ContextMenu_Table";
-            this.ContextMenu_RelationNode.Size = new System.Drawing.Size(181, 92);
+            this.ContextMenu_RelationNode.Size = new System.Drawing.Size(181, 70);
             // 
             // CTMenuRelNode_OpenRelation
             // 

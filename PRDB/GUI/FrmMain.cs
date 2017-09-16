@@ -2115,7 +2115,7 @@ namespace FPRDB.GUI
                     }
                 }
                 
-                int indexNaturalJoin = tmp.IndexOf(" natural join in");
+                int indexNaturalJoin = tmp.IndexOf(" natural join");
                 if (tmp.IndexOf(" natural join in") != -1)
                 {
                     indexNaturalJoin = tmp.IndexOf(" natural join in");
@@ -2131,9 +2131,67 @@ namespace FPRDB.GUI
                         memoEditTxtQuery.SelectionColor = Color.Blue;
 
                     }
+                // kiem tra tu khoa va to xanh tu khoa do
                 if (tmp.IndexOf(" natural join me") != -1)
                 {
                     indexNaturalJoin = tmp.IndexOf(" natural join me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if(tmp.IndexOf(" except in")!= -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" except in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (tmp.IndexOf(" except ig") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" except ig");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (tmp.IndexOf(" except me") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" except me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (tmp.IndexOf(" intersect in") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" intersect in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+
+                if (tmp.IndexOf(" intersect ig") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" intersect ig");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+
+                if (tmp.IndexOf(" intersect me") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" intersect me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+
+                if (tmp.IndexOf(" union in") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" union in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (tmp.IndexOf(" union ig") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" union ig");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (tmp.IndexOf(" union me") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" union me");
                     memoEditTxtQuery.Select(indexNaturalJoin, 17);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }

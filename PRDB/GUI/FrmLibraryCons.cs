@@ -68,6 +68,20 @@ namespace FPRDB.GUI
                 RefreshData();
                 e.Handled = true;
             }
+            if (e.Button.ButtonType == NavigatorButtonType.Remove)
+            {
+                if (XtraMessageBox.Show("Are you sure delete this row?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    string path = Directory.GetCurrentDirectory() + @"\lib\";
+                    if (gridViewLibraryCons.GetSelectedRows()[0] >= 0)
+                    {
+                        var datarow = gridViewLibraryCons.GetDataRow(gridViewLibraryCons.GetSelectedRows()[0]);
+                        var name = datarow["gridColName"];
+                        path = path + name + ".conFS";
+                        ContinuousFuzzySetBLL.DeleteFS(path);
+                    }
+                }
+            }
         }
 
         private void gridViewLibraryCons_RowCellClick(object sender, DevExpress.XtraGrid.Views.Grid.RowCellClickEventArgs e)

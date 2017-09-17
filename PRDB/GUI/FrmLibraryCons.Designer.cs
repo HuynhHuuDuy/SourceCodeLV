@@ -98,7 +98,6 @@
             this.gridCtrLibraryCons.EmbeddedNavigator.Buttons.CancelEdit.Visible = false;
             this.gridCtrLibraryCons.EmbeddedNavigator.Buttons.Edit.Visible = false;
             this.gridCtrLibraryCons.EmbeddedNavigator.Buttons.EndEdit.Visible = false;
-            this.gridCtrLibraryCons.EmbeddedNavigator.Buttons.Remove.Visible = false;
             this.gridCtrLibraryCons.EmbeddedNavigator.ButtonClick += new DevExpress.XtraEditors.NavigatorButtonClickEventHandler(this.gridCtrLibraryCons_EmbeddedNavigator_ButtonClick);
             this.gridCtrLibraryCons.Location = new System.Drawing.Point(2, 20);
             this.gridCtrLibraryCons.MainView = this.gridViewLibraryCons;
@@ -132,8 +131,6 @@
             this.gridColCheck.ColumnEdit = this.repositoryItemCheckEditLibraryDis;
             this.gridColCheck.FieldName = "gridColCheck";
             this.gridColCheck.Name = "gridColCheck";
-            this.gridColCheck.Visible = true;
-            this.gridColCheck.VisibleIndex = 0;
             this.gridColCheck.Width = 87;
             // 
             // repositoryItemCheckEditLibraryDis
@@ -149,7 +146,7 @@
             this.gridColName.OptionsColumn.AllowEdit = false;
             this.gridColName.OptionsColumn.ReadOnly = true;
             this.gridColName.Visible = true;
-            this.gridColName.VisibleIndex = 1;
+            this.gridColName.VisibleIndex = 0;
             this.gridColName.Width = 115;
             // 
             // gridColBtLeft
@@ -160,7 +157,7 @@
             this.gridColBtLeft.OptionsColumn.AllowEdit = false;
             this.gridColBtLeft.OptionsColumn.ReadOnly = true;
             this.gridColBtLeft.Visible = true;
-            this.gridColBtLeft.VisibleIndex = 2;
+            this.gridColBtLeft.VisibleIndex = 1;
             this.gridColBtLeft.Width = 136;
             // 
             // gridColTopLeft
@@ -171,7 +168,7 @@
             this.gridColTopLeft.OptionsColumn.AllowEdit = false;
             this.gridColTopLeft.OptionsColumn.ReadOnly = true;
             this.gridColTopLeft.Visible = true;
-            this.gridColTopLeft.VisibleIndex = 3;
+            this.gridColTopLeft.VisibleIndex = 2;
             this.gridColTopLeft.Width = 125;
             // 
             // gridColTopRight
@@ -182,7 +179,7 @@
             this.gridColTopRight.OptionsColumn.AllowEdit = false;
             this.gridColTopRight.OptionsColumn.ReadOnly = true;
             this.gridColTopRight.Visible = true;
-            this.gridColTopRight.VisibleIndex = 4;
+            this.gridColTopRight.VisibleIndex = 3;
             this.gridColTopRight.Width = 135;
             // 
             // gridColBtRight
@@ -193,7 +190,7 @@
             this.gridColBtRight.OptionsColumn.AllowEdit = false;
             this.gridColBtRight.OptionsColumn.ReadOnly = true;
             this.gridColBtRight.Visible = true;
-            this.gridColBtRight.VisibleIndex = 5;
+            this.gridColBtRight.VisibleIndex = 4;
             this.gridColBtRight.Width = 151;
             // 
             // FrmLibraryCons

@@ -139,6 +139,10 @@ namespace FPRDB.BLL
         {
             return ContinuousFuzzySetDAL.UpdateFS(path, contents, oldName);
         }
+        internal static int DeleteFS(string path)
+        {
+            return ContinuousFuzzySetDAL.DeleteFS(path);
+        }
         public ContinuousFuzzySetBLL GetContinuousFuzzySetByName(string name)
         {
             return ContinuousFuzzySetDAL.GetContinuousFuzzySetByName(name);

@@ -40,8 +40,7 @@ namespace FPRDB.BLL
             this.dataType = "No Type";
             this.domainString = "No Domain String";
             this.domainValues = new List<string>();
-
-        }
+         }
         public FProDataTypeBLL(FProDataTypeBLL fproDataType)
         {
             this.typeName = fproDataType.typeName;

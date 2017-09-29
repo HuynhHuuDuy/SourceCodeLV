@@ -56,24 +56,30 @@ namespace FPRDB.BLL
 
         public string MessageError { get; set; }
         public FProbRelationBLL DescartesAndNaturalJoin { get; set; }
-        public FProbRelationBLL Differences { get; set; }
-        public FProbRelationBLL Union { get; set; }
         public QueryExecutionBLL(string queryString, FProbDatabaseBLL probDatabase)
         {
             this.selectedRelations = new List<FProbRelationBLL>();
             this.selectedRelation1 = new List<FProbRelationBLL>();
             this.selectedRelation2 = new List<FProbRelationBLL>();
             this.selectedAttributes = new List<FProbAttributeBLL>();
+            this.selectedAttribute1 = new List<FProbAttributeBLL>();
+            this.selectedAttribute2 = new List<FProbAttributeBLL>();
             this.relationResult = new FProbRelationBLL();
+            this.relationResult1 = new FProbRelationBLL();
+            this.relationResult2 = new FProbRelationBLL();
             this.probDatabase = probDatabase;
             this.conditionString = string.Empty;
             this.OperationNaturalJoin = string.Empty;
+            this.OperationDifference = string.Empty;
+            this.OperationIntersect = string.Empty;
+            this.OperationUnion = string.Empty;
             this.MessageError = string.Empty;
             this.queryString = StandardizeQuery(queryString);
             this.flagNaturalJoin = false;
+            this.flagDifference = false;
+            this.flagIntersect = false;
+            this.flagUnion = false;
             this.DescartesAndNaturalJoin = new FProbRelationBLL();
-            this.Differences = new FProbRelationBLL();
-            this.Union = new FProbRelationBLL();
         }
         private static string StandardizeQuery(string queryString)
         {
@@ -429,7 +435,7 @@ namespace FPRDB.BLL
 
             return true;
         }
-        private List<FProbAttributeBLL> GetAttribute(string valueString)
+        private List<FProbAttributeBLL> GetAttribute(string valueString,List<FProbRelationBLL> selectedRelations)
         {
             List<FProbAttributeBLL> listProbAttribute = new List<FProbAttributeBLL>();
             int posOne, posTwo;
@@ -466,11 +472,11 @@ namespace FPRDB.BLL
                     return null;
                 }
                 #endregion
-                for (int i = 0; i < this.selectedRelations.Count; i++)
+                for (int i = 0; i < selectedRelations.Count; i++)
                 {
-                    foreach (FProbAttributeBLL attr in this.selectedRelations[i].FproSchema.FproAttributes)
+                    foreach (FProbAttributeBLL attr in selectedRelations[i].FproSchema.FproAttributes)
                     {
-                        attr.AttributeName = String.Format("{0}.{1}", this.selectedRelations[i].RelationName, attr.AttributeName);
+                        attr.AttributeName = String.Format("{0}.{1}", selectedRelations[i].RelationName, attr.AttributeName);
                         listProbAttribute.Add(attr);
                     }
                 }
@@ -497,7 +503,7 @@ namespace FPRDB.BLL
                             string attributeName = str.Trim();
                             int countOne = 0;
                             int countSameAttribute = 0;
-                            foreach (FProbRelationBLL relation in this.selectedRelations)
+                            foreach (FProbRelationBLL relation in selectedRelations)
                             {
                                 List<string> listOfAttributeName = relation.FproSchema.ListOfAttributeNameToLower();
                                 if (listOfAttributeName.Contains(attributeName.ToLower()))
@@ -512,7 +518,7 @@ namespace FPRDB.BLL
                                     countOne++;
                                 }
                             }
-                            if (countOne == this.selectedRelations.Count)
+                            if (countOne == selectedRelations.Count)
                             {
                                 MessageError = String.Format(" Invalid attribute name '{0}'.", attributeName);
                                 return null;
@@ -531,7 +537,7 @@ namespace FPRDB.BLL
                                 MessageError = "Incorrect syntax near the keyword 'select'.";
                                 return null;
                             }
-                            FProbRelationBLL relation = this.selectedRelations.SingleOrDefault(c => c.RelationName.Trim() == array[0].Trim());
+                            FProbRelationBLL relation = selectedRelations.SingleOrDefault(c => c.RelationName.Trim() == array[0].Trim());
                             if (relation == null)
                             {
                                 MessageError = String.Format("The multi-part identifier '{0}' could not be bound.", str);
@@ -580,22 +586,22 @@ namespace FPRDB.BLL
                         {
                             if (S.Contains("union in")) {
                                 int index_Union = S.IndexOf("union in");
-                                query_1 = S.Substring(0, index_Union);
-                                query_2 = S.Substring(index_Union, S.Length - 1);
-                            OperationUnion = "in";
+                                query_1 = S.Substring(0, index_Union).Trim();
+                                query_2 = S.Substring(index_Union+8).Trim();
+                                OperationUnion = "in";
                             }
                             if (S.Contains("union ig"))
                             {
                                 int index_Union = S.IndexOf("union ig");
-                                query_1 = S.Substring(0, index_Union);
-                                query_2 = S.Substring(index_Union, S.Length - 1);
+                                query_1 = S.Substring(0, index_Union).Trim();
+                                query_2 = S.Substring(index_Union +8).Trim();
                                 OperationUnion = "ig";
-                        }
+                            }
                             if (S.Contains("union me"))
                             {
                                 int index_Union = S.IndexOf("union me");
-                                query_1 = S.Substring(0, index_Union);
-                                query_2 = S.Substring(index_Union, S.Length - 1);
+                                query_1 = S.Substring(0, index_Union).Trim();
+                                query_2 = S.Substring(index_Union + 8).Trim();
                                 OperationUnion = "me";
                             }
                         flagUnion = true;
@@ -605,22 +611,22 @@ namespace FPRDB.BLL
                             if (S.Contains("except in"))
                             {
                                 int index_Except = S.IndexOf("except in");
-                                query_1 = S.Substring(0, index_Except);
-                                query_2 = S.Substring(index_Except, S.Length - 1);
+                                query_1 = S.Substring(0, index_Except).Trim();
+                                query_2 = S.Substring(index_Except +9).Trim();
                                 OperationDifference = "in";
                             }
                             if (S.Contains("except ig"))
                             {
                                 int index_Except = S.IndexOf("except ig");
-                                query_1 = S.Substring(0, index_Except);
-                                query_2 = S.Substring(index_Except, S.Length - 1);
+                                query_1 = S.Substring(0, index_Except).Trim();
+                                query_2 = S.Substring(index_Except + 9).Trim();
                                 OperationDifference = "ig";
                         }
                             if (S.Contains("except me"))
                             {
                                 int index_Except = S.IndexOf("except ig");
-                                query_1 = S.Substring(0, index_Except);
-                                query_2 = S.Substring(index_Except, S.Length - 1);
+                                query_1 = S.Substring(0, index_Except).Trim();
+                                query_2 = S.Substring(index_Except + 9).Trim();
                                 OperationDifference = "me";
                             }
                             flagDifference = true;
@@ -630,22 +636,22 @@ namespace FPRDB.BLL
                             if (S.Contains("intersect in"))
                             {
                                 int index_intersect = S.IndexOf("intersect in");
-                                query_1 = S.Substring(0, index_intersect);
-                                query_2 = S.Substring(index_intersect, S.Length - 1);
+                                query_1 = S.Substring(0, index_intersect).Trim();
+                                query_2 = S.Substring(index_intersect + 12).Trim();
                                 OperationIntersect = "in";
                             }
                             if (S.Contains("intersect ig"))
                             {
                                 int index_intersect = S.IndexOf("intersect ig");
                                 query_1 = S.Substring(0, index_intersect);
-                                query_2 = S.Substring(index_intersect, S.Length - 1);
+                                query_2 = S.Substring(index_intersect + 12).Trim();
                                 OperationIntersect = "ig";
-                        }
+                            }
                             if (S.Contains("intersect me"))
                             {
                                 int index_intersect = S.IndexOf("intersect me");
-                                query_1 = S.Substring(0, index_intersect);
-                                query_2 = S.Substring(index_intersect, S.Length - 1);
+                                query_1 = S.Substring(0, index_intersect).Trim();
+                                query_2 = S.Substring(index_intersect + 12).Trim();
                                 OperationIntersect = "me";
                             }
                             flagIntersect = true;
@@ -667,40 +673,46 @@ namespace FPRDB.BLL
                         }
 
                         //Get All Attribute (danh sách các cột)
-                        this.selectedAttribute1 = GetAttribute(query_1);//lấy ra danh sách attributes trong câu truy vấn
-                        this.selectedAttribute2 = GetAttribute(query_2);
+                        this.selectedAttribute1 = GetAttribute(query_1, this.selectedRelation1);//lấy ra danh sách attributes trong câu truy vấn
+                        this.selectedAttribute2 = GetAttribute(query_2,this.selectedRelation2);
                         if (this.selectedAttribute1 == null || this.selectedAttribute2== null)
                             return false;
+                    if (flagUnion || flagIntersect)
+                    {
+                        this.selectedAttributes = this.selectedAttribute2;
+                    }
+                    if (flagDifference)
+                    {
+                        this.selectedAttributes = this.selectedAttribute1;
+                    }
+                       
                         //(điều kiện chọn)
                         this.conditionString1 = GetCondition(query_1);// điều kiện truy vấn
                         this.conditionString2 = GetCondition(query_2);
 
                 }
-                else
-                {
+                   else
+                    {
                     //Kiểm tra sự hợp lệ của câu lệnh truy vấn
-                    if (!this.CheckStringQuery(S))//nếu câu truy vấn không hợp lệ (vị trí các từ select from where hay có chưa ký tự đặc biệt)
-                    {
-                        return false;
-                    }
+                        if (!this.CheckStringQuery(S))//nếu câu truy vấn không hợp lệ (vị trí các từ select from where hay có chưa ký tự đặc biệt)
+                        {
+                            return false;
+                        }
 
-                    //Get All Relation (danh sách các bảng)
-                    this.selectedRelations = GetAllRelation(S);//lấy ra danh sách relation trong câu truy vấn
-                    if (this.selectedRelations == null)
-                    {
-                        return false;
-                    }
+                        //Get All Relation (danh sách các bảng)
+                        this.selectedRelations = GetAllRelation(S);//lấy ra danh sách relation trong câu truy vấn
+                        if (this.selectedRelations == null)
+                        {
+                            return false;
+                        }
 
-
-                    //Get All Attribute (danh sách các cột)
-                    this.selectedAttributes = GetAttribute(S);//lấy ra danh sách attributes trong câu truy vấn
-                    if (this.selectedAttributes == null)
-                        return false;
-                    //(điều kiện chọn)
-                    this.conditionString = GetCondition(S);// điều kiện truy vấn
-
+                        //Get All Attribute (danh sách các cột)
+                        this.selectedAttributes = GetAttribute(S,this.selectedRelations);//lấy ra danh sách attributes trong câu truy vấn
+                        if (this.selectedAttributes == null)
+                            return false;
+                        //(điều kiện chọn)
+                        this.conditionString = GetCondition(S);// điều kiện truy vấn
                 }
-
                 return true;
 
             }
@@ -816,7 +828,7 @@ namespace FPRDB.BLL
             }
 
             relationResult.FproSchema.FproAttributes.AddRange(selectedRelation1.FproSchema.FproAttributes);
-            relationResult.ListRenameRelation.Add(selectedRelation2.RelationName);
+            relationResult.ListRenameRelation.Add(selectedRelation1.RelationName);
 
             foreach (FProbAttributeBLL attr in selectedRelation2.FproSchema.FproAttributes)
             {
@@ -824,35 +836,37 @@ namespace FPRDB.BLL
                     attr.AttributeName = selectedRelation2.RelationName + "." + attr.AttributeName;
             }
             relationResult.FproSchema.FproAttributes.AddRange(selectedRelation2.FproSchema.FproAttributes);
+            relationResult.ListRenameRelation.Add(selectedRelation2.RelationName);
             // relation 0
             List<string> atrriButeRelation0 = new List<string>();
-            List<FProbAttributeBLL> listAtrribute = new List<FProbAttributeBLL>();
-            listAtrribute = selectedRelation1.FproSchema.FproAttributes;
-            for (var i = 0; i < listAtrribute.Count; i++)
+            List<FProbAttributeBLL> listAtrribute0 = new List<FProbAttributeBLL>();
+            listAtrribute0 = selectedRelation1.FproSchema.FproAttributes;
+            for (var i = 0; i < listAtrribute0.Count; i++)
             {
-                if (listAtrribute[i].FproDataType.TypeName == "String"  || listAtrribute[i].FproDataType.TypeName=="Int32")
+                if (((listAtrribute0[i].FproDataType.TypeName == "String") && (listAtrribute0[i].PrimaryKey == true)) || ((listAtrribute0[i].FproDataType.TypeName == "Int32") && (listAtrribute0[i].PrimaryKey == true)))
                 {
-                    for (int k = 0; i < selectedRelations[0].FproTuples.Count; k++)
+                    for (int k = 0; k < selectedRelation1.FproTuples.Count; k++)
                     {
-                        if(selectedRelations[0].FproTuples[k].FproTriples[i].MinProb[0] == 1 && selectedRelations[0].FproTuples[k].FproTriples[i].MaxProb[0] == 1) {
-                            atrriButeRelation0.Add(selectedRelations[0].FproTuples[k].FproTriples[i].Value[0].ToString());
+                        if(selectedRelation1.FproTuples[k].FproTriples[i].MinProb[0] == 1 && selectedRelation1.FproTuples[k].FproTriples[i].MaxProb[0] == 1) {
+                            atrriButeRelation0.Add(selectedRelation1.FproTuples[k].FproTriples[i].Value[0].ToString());
                         }
                         
                     }
+                    
                 }
             }
             // relation 1
             List<string> atrributeRelation1 = new List<string>();
             List<FProbAttributeBLL> listAtrribute1 = new List<FProbAttributeBLL>();
-            listAtrribute = selectedRelation2.FproSchema.FproAttributes;
+            listAtrribute1 = selectedRelation2.FproSchema.FproAttributes;
             for (int j = 0; j < listAtrribute1.Count; j++)
             {
-                if(listAtrribute[j].FproDataType.TypeName == "String" || listAtrribute[j].FproDataType.TypeName == "Int32")
+                if (((listAtrribute1[j].FproDataType.TypeName == "String") && (listAtrribute1[j].PrimaryKey == true)) || ((listAtrribute1[j].FproDataType.TypeName == "Int32") && (listAtrribute1[j].PrimaryKey == true)))
                 {
                     for (int k = 0; k < selectedRelation2.FproTuples.Count; k++)
                     {
-                        if (selectedRelations[0].FproTuples[k].FproTriples[j].MinProb[0] == 1 && selectedRelations[0].FproTuples[k].FproTriples[j].MaxProb[0] == 1) {
-                            atrriButeRelation0.Add(selectedRelation2.FproTuples[k].FproTriples[j].Value[0].ToString());
+                        if (selectedRelation2.FproTuples[k].FproTriples[j].MinProb[0] == 1 && selectedRelation2.FproTuples[k].FproTriples[j].MaxProb[0] == 1) {
+                            atrributeRelation1.Add(selectedRelation2.FproTuples[k].FproTriples[j].Value[0].ToString());
                         }
                     }
                 }
@@ -863,37 +877,7 @@ namespace FPRDB.BLL
             {
                 if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]) == false)
                 {
-                    relationResult.FproTuples.Add(selectedRelations[0].FproTuples[i]);
-                }
-                else
-                {
-                    for (int j = 0; j <selectedRelation2.FproSchema.FproAttributes.Count; j++)
-                    {
-                        if (i != j && selectedRelation1.FproSchema.FproAttributes[i].FproDataType.TypeName == selectedRelation2.FproSchema.FproAttributes[j].FproDataType.TypeName)
-                        {
-                            string attributeOne = relationResult.FproSchema.FproAttributes[i].AttributeName.Substring(relationResult.FproSchema.FproAttributes[i].AttributeName.IndexOf(".") + 1);
-                            string attributeTwo = relationResult.FproSchema.FproAttributes[j].AttributeName.Substring(relationResult.FproSchema.FproAttributes[j].AttributeName.IndexOf(".") + 1);
-
-                            if (attributeOne.Equals(attributeTwo, StringComparison.CurrentCultureIgnoreCase))
-                            {                                                                                                                                                                                                                   
-
-                                for (int k = selectedRelation2.FproTuples.Count - 1; k >= 0; k--)
-                                {
-                                    FProbTripleBLL triple = JoinTwoTripleDiffe(relationResult.FproTuples[k].FproTriples[i], relationResult.FproTuples[k].FproTriples[j], relationResult.FproSchema.FproAttributes[i], this.OperationDifference);
-                                    if (triple != null)
-                                    {
-                                        relationResult.FproTuples[k].FproTriples[i] = triple;
-                                        relationResult.FproTuples[k].FproTriples[j] = triple;
-                                    }
-                                    else
-                                    {
-                                        relationResult.FproTuples.RemoveAt(k);
-
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    relationResult.FproTuples.Add(selectedRelation1.FproTuples[i]);
                 }
             }
             OperationDifference = string.Empty;
@@ -1347,7 +1331,6 @@ namespace FPRDB.BLL
                 if (attr.AttributeName.IndexOf(".") == -1)
                     attr.AttributeName = selectedRelation1.RelationName + "." + attr.AttributeName;
             }
-
             relationResult.FproSchema.FproAttributes.AddRange(selectedRelation1.FproSchema.FproAttributes);
             relationResult.ListRenameRelation.Add(selectedRelation2.RelationName);
 
@@ -1357,21 +1340,21 @@ namespace FPRDB.BLL
                     attr.AttributeName = selectedRelation2.RelationName + "." + attr.AttributeName;
             }
             relationResult.FproSchema.FproAttributes.AddRange(selectedRelation2.FproSchema.FproAttributes);
+            relationResult.ListRenameRelation.Add(selectedRelation1.RelationName);
 
-          
             // relation 0
             List<string> atrriButeRelation0 = new List<string>();
-            List<FProbAttributeBLL> listAtrribute = new List<FProbAttributeBLL>();
-            listAtrribute = selectedRelation1.FproSchema.FproAttributes;
-            for (var i = 0; i < listAtrribute.Count; i++)
+            List<FProbAttributeBLL> listAtrribute0 = new List<FProbAttributeBLL>();
+            listAtrribute0 = selectedRelation1.FproSchema.FproAttributes;
+            for (var i = 0; i < listAtrribute0.Count; i++)
             {
-                if (listAtrribute[i].FproDataType.TypeName == "String" || listAtrribute[i].FproDataType.TypeName == "Int32")
+                if (((listAtrribute0[i].FproDataType.TypeName == "String")&&(listAtrribute0[i].PrimaryKey==true)) || ((listAtrribute0[i].FproDataType.TypeName == "Int32")&&(listAtrribute0[i].PrimaryKey==true)))
                 {
-                    for (int k = 0; i < selectedRelation1.FproTuples.Count; k++)
+                    for (int k = 0; k < selectedRelation1.FproTuples.Count; k++)
                     {
                         if (selectedRelation1.FproTuples[k].FproTriples[i].MinProb[0] == 1 && selectedRelation1.FproTuples[k].FproTriples[i].MaxProb[0] == 1)
                         {
-                            atrriButeRelation0.Add(selectedRelations[0].FproTuples[k].FproTriples[i].Value[0].ToString());
+                            atrriButeRelation0.Add(selectedRelation1.FproTuples[k].FproTriples[i].Value[0].ToString());
                         }
 
                     }
@@ -1380,12 +1363,12 @@ namespace FPRDB.BLL
             // relation 1
             List<string> atrributeRelation1 = new List<string>();
             List<FProbAttributeBLL> listAtrribute1 = new List<FProbAttributeBLL>();
-            listAtrribute = selectedRelation2.FproSchema.FproAttributes;
-            for (var i = 0; i < listAtrribute.Count; i++)
+            listAtrribute1 = selectedRelation2.FproSchema.FproAttributes;
+            for (var i = 0; i < listAtrribute1.Count; i++)
             {
-                if (listAtrribute[i].FproDataType.TypeName == "String" || listAtrribute[i].FproDataType.TypeName == "Int32")
+                if (((listAtrribute1[i].FproDataType.TypeName == "String") && (listAtrribute1[i].PrimaryKey == true)) || ((listAtrribute1[i].FproDataType.TypeName == "Int32") && (listAtrribute1[i].PrimaryKey == true)))
                 {
-                    for (int k = 0; i < selectedRelation2.FproTuples.Count; k++)
+                    for (int k = 0; k < selectedRelation2.FproTuples.Count; k++)
                     {
                         if (selectedRelation2.FproTuples[k].FproTriples[i].MinProb[0] == 1 && selectedRelation2.FproTuples[k].FproTriples[i].MaxProb[0] == 1)
                         {
@@ -1401,37 +1384,7 @@ namespace FPRDB.BLL
             {
                 if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]) == false)
                 {
-                    relationResult.FproTuples.Add(selectedRelations[0].FproTuples[i]);
-                }
-                else
-                {
-                    for (int j = 0; j < selectedRelation2.FproSchema.FproAttributes.Count; j++)
-                    {
-                        if (i != j && selectedRelation1.FproSchema.FproAttributes[i].FproDataType.TypeName == selectedRelation2.FproSchema.FproAttributes[j].FproDataType.TypeName)
-                        {
-                            string attributeOne = relationResult.FproSchema.FproAttributes[i].AttributeName.Substring(relationResult.FproSchema.FproAttributes[i].AttributeName.IndexOf(".") + 1);
-                            string attributeTwo = relationResult.FproSchema.FproAttributes[j].AttributeName.Substring(relationResult.FproSchema.FproAttributes[j].AttributeName.IndexOf(".") + 1);
-
-                            if (attributeOne.Equals(attributeTwo, StringComparison.CurrentCultureIgnoreCase))
-                            {
-
-                                for (int k = selectedRelation2.FproTuples.Count - 1; k >= 0; k--)
-                                {
-                                    FProbTripleBLL triple = JoinTwoTripleUnion(relationResult.FproTuples[k].FproTriples[i], relationResult.FproTuples[k].FproTriples[j], relationResult.FproSchema.FproAttributes[i], this.OperationUnion);
-                                    if (triple != null)
-                                    {
-                                        relationResult.FproTuples[k].FproTriples[i] = triple;
-                                        relationResult.FproTuples[k].FproTriples[j] = triple;
-                                    }
-                                    else
-                                    {
-                                        relationResult.FproTuples.RemoveAt(k);
-
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    relationResult.FproTuples.Add(selectedRelation1.FproTuples[i]);
                 }
             }
             // so sánh từng triple trong relation 1 với danh sách riple trong relation 0
@@ -1440,11 +1393,13 @@ namespace FPRDB.BLL
             {
                 if (AlreadyList(atrriButeRelation0, atrributeRelation1[i]) == false)
                 {
-                    relationResult.FproTuples.Add(selectedRelation1.FproTuples[i]);
+                    relationResult.FproTuples.Add(selectedRelation2.FproTuples[i]);
                 }
             }
-            OperationDifference = string.Empty;
-            flagDifference = false;
+            // nếu có chung khóa thì thực hiện phép hợp dựa vào biểu thức truyền vào.
+         
+            OperationUnion = string.Empty;
+            flagUnion = false;
             return relationResult;
         }
         /// <summary>
@@ -1586,7 +1541,7 @@ namespace FPRDB.BLL
                         if (!this.query_1.Contains("where"))
                         {
                             this.relationResult1 = getRelationBySelectAttribute(this.selectedRelation1[0], this.selectedAttribute1);
-                            return true;
+  
                         }
                         else
                         {
@@ -1599,7 +1554,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation1[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult1.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1638,7 +1593,6 @@ namespace FPRDB.BLL
                         if (!this.query_2.Contains("where"))
                         {
                             this.relationResult2 = getRelationBySelectAttribute(this.selectedRelation2[0], this.selectedAttribute2);
-                            return true;
                         }
                         else
                         {
@@ -1651,7 +1605,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation2[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult2.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1691,7 +1645,6 @@ namespace FPRDB.BLL
                         if (!this.query_1.Contains("where"))
                         {
                             this.relationResult1 = getRelationBySelectAttribute(this.selectedRelation1[0], this.selectedAttribute1);
-                            return true;
                         }
                         else
                         {
@@ -1704,7 +1657,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation1[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult1.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1743,7 +1696,6 @@ namespace FPRDB.BLL
                         if (!this.query_2.Contains("where"))
                         {
                             this.relationResult2 = getRelationBySelectAttribute(this.selectedRelation2[0], this.selectedAttribute2);
-                            return true;
                         }
                         else
                         {
@@ -1756,7 +1708,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation2[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult2.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1773,7 +1725,9 @@ namespace FPRDB.BLL
                             this.relationResult2.FproSchema = this.selectedRelation2[0].FproSchema;
                             this.relationResult2 = getRelationBySelectAttribute(this.relationResult2, this.selectedAttribute2);
                         }
+                        this.relationResult.FproSchema = this.selectedRelation2[0].FproSchema;
                         this.relationResult = Union1(this.relationResult1, this.relationResult2);
+                        return true;
                     }
                     if (S.Contains("intersect"))
                     {
@@ -1796,7 +1750,6 @@ namespace FPRDB.BLL
                         if (!this.query_1.Contains("where"))
                         {
                             this.relationResult1 = getRelationBySelectAttribute(this.selectedRelation1[0], this.selectedAttribute1);
-                            return true;
                         }
                         else
                         {
@@ -1809,7 +1762,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation1[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult1.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1848,7 +1801,6 @@ namespace FPRDB.BLL
                         if (!this.query_2.Contains("where"))
                         {
                             this.relationResult2 = getRelationBySelectAttribute(this.selectedRelation2[0], this.selectedAttribute2);
-                            return true;
                         }
                         else
                         {
@@ -1861,7 +1813,7 @@ namespace FPRDB.BLL
 
                             foreach (FProbTupleBLL tuple in this.selectedRelation2[0].FproTuples)
                                 if (Condition.Satisfied(tuple))
-                                    this.relationResult.FproTuples.Add(tuple);
+                                    this.relationResult2.FproTuples.Add(tuple);
 
                             if (Condition.MessageError != string.Empty)
                             {
@@ -1880,7 +1832,6 @@ namespace FPRDB.BLL
                         }
                         this.relationResult = Intersect(this.relationResult1, this.relationResult2);
                     }
-
                 }
                 else
                 {
@@ -1903,7 +1854,6 @@ namespace FPRDB.BLL
                     if (!this.queryString.Contains("where"))
                     {
                         this.relationResult = getRelationBySelectAttribute(this.selectedRelations[0], this.selectedAttributes);
-                        return true;
                     }
                     else
                     {

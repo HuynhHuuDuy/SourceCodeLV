@@ -2494,9 +2494,7 @@ namespace FPRDB.GUI
 
                 if (query.ExecuteQuery())
                 {
-
                     txtMessage.Text = string.Empty;
-
                     if (query.relationResult.FproTuples.Count <= 0)
                     {
                         txtMessage.Text = "No tuple satisfies the condition";

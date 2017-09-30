@@ -25,8 +25,8 @@ namespace FPRDB.BLL
             {
                 if (conditionString[i] == '<' && conditionString[i + 1] != '=')
                     conditionString = conditionString.Insert(i++, "_");
-                if (conditionString[i] == '>' && conditionString[i + 1] != '=')
                     conditionString = conditionString.Insert(i++, "_");
+                if (conditionString[i] == '>' && conditionString[i + 1] != '=')
                 if (conditionString[i] == '=' && conditionString[i - 1] != '!' && conditionString[i - 1] != '<' && conditionString[i - 1] != '>')
                     conditionString = conditionString.Insert(i++, "_");
                 i++;

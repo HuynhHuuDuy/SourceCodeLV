@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace FPRDB.BLL
 {
     public class QueryExecutionBLL
@@ -128,6 +129,7 @@ namespace FPRDB.BLL
                 return false;
             }
 
+            //fix now
             if (indexWhere != -1)//nếu có từ where trong câu truy vấn
             {
 
@@ -144,17 +146,11 @@ namespace FPRDB.BLL
             }
             else//nếu không có điều kiện chọn where
             {
-                if (indexSelect < indexFrom && indexWhere == -1)
-                {
-
-                }
-                else// lỗi thứ tự các từ select from không đúng cấu trúc
+                if (indexSelect > indexFrom && indexWhere != -1)
                 {
                     MessageError = "Syntax Error! The keyword must theo order 'Select From ' ";
                     return false;
                 }
-
-
             }
 
             if (indexSelect != indexLastSelect)// trong câu truy vấn chỉ có duy nhất 1 từ select nếu có hơn sẽ báo lỗi
@@ -216,6 +212,12 @@ namespace FPRDB.BLL
 
             return true;
         }
+
+        /// <summary>
+        /// Important! Function get all relation(table name)
+        /// </summary>
+        /// <param name="valueString"></param>
+        /// <returns></returns>
         private List<FProbRelationBLL> GetAllRelation(string valueString)
         {
             //Khởi tạo
@@ -374,7 +376,7 @@ namespace FPRDB.BLL
                 probRelations.Add(rela);
             }
 
-
+            //will fix, nen de tren cung, kiem tra dieu kien, if cau query sai k can chay tiep nua
             if (probRelations.Count == 2)
             {
 

@@ -765,9 +765,9 @@ namespace FPRDB.BLL
 
             for (int i = 0; i < relation.FproSchema.FproAttributes.Count - selectedRelation2.FproSchema.FproAttributes.Count; i++)
             {
-
                 for (int j = selectedRelation2.FproSchema.FproAttributes.Count; j < relation.FproSchema.FproAttributes.Count; j++)
                 {
+                    //cho nay ne. no' so sanh cho nay ne.
                     if (i != j && relation.FproSchema.FproAttributes[i].FproDataType.TypeName == relation.FproSchema.FproAttributes[j].FproDataType.TypeName)
                     {
                         string attributeOne = relation.FproSchema.FproAttributes[i].AttributeName.Substring(relation.FproSchema.FproAttributes[i].AttributeName.IndexOf(".") + 1);
@@ -1325,6 +1325,23 @@ namespace FPRDB.BLL
         /// <param name="selectedRelation1"></param>
         /// <param name="selectedRelation2"></param>
         /// <returns></returns>
+        /// 
+        private FProbTupleBLL joinTwoTuple(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
+        {
+            FProbTupleBLL result = new FProbTupleBLL();
+            for(int i = 0; i < tuple1.FproTriples.Count; i++)
+            {
+                for(int j = 0; j < tuple2.FproTriples.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        var tampResult = JoinTwoTripleIntersect(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        result.FproTriples.Add(tampResult);
+                    }
+                }
+            }
+            return result;
+        }
         private FProbRelationBLL Union1(FProbRelationBLL selectedRelation1, FProbRelationBLL selectedRelation2)
         {
             FProbRelationBLL relationResult = new FProbRelationBLL();
@@ -1468,75 +1485,51 @@ namespace FPRDB.BLL
                     }
                 }
             }
-
+            // biến lưu trữ các tuple có khóa trùng
+            var abc1 = new List<FProbTupleBLL>();
+            var abc2 = new List<FProbTupleBLL>();
             //result select 1 is selectedRelation1
             //result select 2 is selectedRelation2
-            var list = new List<string>();
+            var list_duplicate = new List<string>();
             
             for (int i = 0; i < atrriButeRelation0.Count; i++)
             {
                 if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]))
                 {
-                    list.Add(atrriButeRelation0[i]);
+                    list_duplicate.Add(atrriButeRelation0[i]);
                 }
             }
-
-            for (int i = 0; i < list.Count; i++)
+            // tìm những tuple ở selectRelation1 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
             {
                 for (int j = 0; j < selectedRelation1.FproTuples.Count;j++)
                 {
-
-                    var abc1 = selectedRelation1.FproTuples[j].FproTriples.ToList()
-                        .Where(a => a.Value.Equals(list[i]));
-
-                    var abc2 = selectedRelation1.FproTuples[j].FproTriples.ToList()
-                        .Where(a => a.Value.Equals(list[i]));
-
-
-                    //if (selectedRelation1.FproTuples[j].FproTriples[j].Value=list[i])
-                }
-            }
-
-                
-
-                // so sanh tung khoa trong hai tap thu duoc
-                for (int i = 0; i < atrriButeRelation0.Count; i++)
-            {
-                for (int j = 0; j < atrributeRelation1.Count; j++)
-                {
-                    if (atrriButeRelation0[i].Equals(atrributeRelation1[j], StringComparison.CurrentCultureIgnoreCase))
+                    if(selectedRelation1.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
                     {
-                        for (int k = 0; k < selectedRelation1.FproTuples[i].FproTriples.Count; k++)
-                        {
-                            if (selectedRelation1.FproSchema.FproAttributes[i].FproDataType.TypeName == selectedRelation2.FproSchema.FproAttributes[j].FproDataType.TypeName)
-                            {
-                                string attributeOne = selectedRelation1.FproSchema.FproAttributes[k].AttributeName.Substring(selectedRelation1.FproSchema.FproAttributes[k].AttributeName.IndexOf(".") + 1);
-                                string attributeTwo = selectedRelation2.FproSchema.FproAttributes[k].AttributeName.Substring(selectedRelation2.FproSchema.FproAttributes[k].AttributeName.IndexOf(".") + 1);
-
-                                if (attributeOne.Equals(attributeTwo, StringComparison.CurrentCultureIgnoreCase))
-                                {
-
-                                    for (int c = selectedRelation2.FproTuples[i].FproTriples.Count - 1; c >= 0; c--)
-                                    {
-                                        FProbTripleBLL triple = JoinTwoTripleIntersect(selectedRelation1.FproTuples[i].FproTriples[c], selectedRelation2.FproTuples[j].FproTriples[c], selectedRelation1.FproSchema.FproAttributes[k], this.OperationIntersect);
-                                        if (triple != null)
-                                        {
-                                            relationResult.FproTuples[i].FproTriples[c] = triple;
-                                        }
-                                        else
-                                        {
-                                            relationResult.FproTuples.RemoveAt(i);
-
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        abc1.Add(selectedRelation1.FproTuples[j]);
                     }
                 }
-
-
             }
+            // tìm những tuple ở selectRelation2 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
+            {
+                for (int j = 0; j < selectedRelation2.FproTuples.Count; j++)
+                {
+                    if (selectedRelation2.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    {
+                        abc2.Add(selectedRelation2.FproTuples[j]);
+                    }
+                }
+            }
+            for(int i = 0; i < abc1.Count; i++)
+            {
+                for(int j = 0; j < abc2.Count; j++)
+                {
+                    var tamp_result = joinTwoTuple(abc1[i], abc2[j], selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
+                }
+            }
+       
             OperationIntersect = string.Empty;
             flagIntersect = false;
             return relationResult;
@@ -1550,7 +1543,7 @@ namespace FPRDB.BLL
             try
             {
                 string S = this.queryString;
-                if (!QueryAnalyze()) return false;
+               if (!QueryAnalyze()) return false;
                 // kiểm tra câu truy vấn có thực thi phép trừ, giao, hợp  hay không
                 if (S.Contains("except") || S.Contains("union") || S.Contains("intersect"))
                 {

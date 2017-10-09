@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
@@ -173,10 +174,7 @@ namespace FPRDB.BLL
 
             #region check kí tự đặc biệt
 
-            char[] SpecialCharacter = new char[] { '~', '!', '@', '#', '$', '%', '^', '&', '[', ']', '(', ')', '+', '`', ';', '<', '>', '?', '/', ':', '\"', '\'', '=', '{', '}', '\\', '|', '→' };
-            string specialcharacter = string.Empty;
-            for (int i = 0; i < SpecialCharacter.Length; i++)
-                specialcharacter += SpecialCharacter[i];
+            Regex regex = new Regex(@"[^a-zA-Z0-9*,\s⊗⊕⊖→_]");
 
             string subString = string.Empty;
             if (stringQuery.Contains("where"))
@@ -184,29 +182,22 @@ namespace FPRDB.BLL
                 int pOne = stringQuery.IndexOf("select") + 6;
                 int pTwo = stringQuery.IndexOf("where") - 1;
                 subString = stringQuery.Substring(pOne, pTwo);// lấy đoạn sau từ select và trước từ where
-                for (int i = 0; i < subString.Length; i++)
+
+                Match match = regex.Match(subString);
+                if (match.Success)
                 {
-                    if (specialcharacter.Contains(subString[i]))
-                    {
-
-                        MessageError = String.Format("Error: Do not input the special character '{0}' in query statement", subString[i]);
-                        return false;
-
-                    }
+                    MessageError = String.Format("Error: Do not input the special character in query statement !");
+                    return false;
                 }
             }
             else
             {
-                for (int i = 0; i < stringQuery.Length; i++)
+                Match match = regex.Match(stringQuery);
+                if (match.Success)
                 {
-                    if (specialcharacter.Contains(stringQuery[i]))
-                    {
-                        MessageError = String.Format("Error: Do not input the special character '{0}' in query statement", stringQuery[i]);
-                        return false;
-
-                    }
+                    MessageError = String.Format("Error: Do not input the special character in query statement !");
+                    return false;
                 }
-
             }
             #endregion
 

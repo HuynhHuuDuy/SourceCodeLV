@@ -52,8 +52,8 @@ namespace FPRDB.BLL
                 }
                 else
                 {
-                    List<Double> h1 = disfs1.getXsForMembership(1.0);
-                    List<Double> h2 = disfs2.getXsForMembership(1.0);
+                    List<Double> h1 = disfs1.getXsForMembership(0.1);
+                    List<Double> h2 = disfs2.getXsForMembership(0.1);
                     for (int i = 0; i < h1.Count; i++)
                     {
                         for (int j = 0; j < h2.Count; j++)

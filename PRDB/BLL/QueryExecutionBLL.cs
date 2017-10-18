@@ -130,15 +130,9 @@ namespace FPRDB.BLL
                 return false;
             }
 
-            //fix now
             if (indexWhere != -1)//nếu có từ where trong câu truy vấn
             {
-
-                if (indexSelect < indexFrom && indexFrom < indexWhere)
-                {
-
-                }
-                else// lỗi thứ tự các từ select from where không đúng cấu trúc
+                if (indexSelect > indexFrom || indexFrom > indexWhere)
                 {
                     MessageError = "Syntax Error! The keyword must theo order 'Select From Where' ";
                     return false;

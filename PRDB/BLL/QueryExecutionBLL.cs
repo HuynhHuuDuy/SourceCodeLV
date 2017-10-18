@@ -868,6 +868,52 @@ namespace FPRDB.BLL
                     relationResult.FproTuples.Add(selectedRelation1.FproTuples[i]);
                 }
             }
+            // nếu hai tuple có khóa trùng 
+            // biến lưu trữ các tuple có khóa trùng
+            var abc1 = new List<FProbTupleBLL>();
+            var abc2 = new List<FProbTupleBLL>();
+            //result select 1 is selectedRelation1
+            //result select 2 is selectedRelation2
+            var list_duplicate = new List<string>();
+
+            for (int i = 0; i < atrriButeRelation0.Count; i++)
+            {
+                if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]))
+                {
+                    list_duplicate.Add(atrriButeRelation0[i]);
+                }
+            }
+            // tìm những tuple ở selectRelation1 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
+            {
+                for (int j = 0; j < selectedRelation1.FproTuples.Count; j++)
+                {
+                    if (selectedRelation1.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    {
+                        abc1.Add(selectedRelation1.FproTuples[j]);
+                    }
+                }
+            }
+            // tìm những tuple ở selectRelation2 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
+            {
+                for (int j = 0; j < selectedRelation2.FproTuples.Count; j++)
+                {
+                    if (selectedRelation2.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    {
+                        abc2.Add(selectedRelation2.FproTuples[j]);
+                    }
+                }
+            }
+            for (int i = 0; i < abc1.Count; i++)
+            {
+                for (int j = 0; j < abc2.Count; j++)
+                {
+                    var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
+                }
+            }
+
             OperationDifference = string.Empty;
             flagDifference = false;
             return relationResult;
@@ -907,15 +953,19 @@ namespace FPRDB.BLL
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
                                 List<Double> h1 = disfs1.getXsForMembership(1.0);
                                 List<Double> h2 = disfs2.getXsForMembership(1.0);
-                                for (int l = 0; l < h1.Count; l++)
+                                //for (int l = 0; l < h1.Count; l++)
+                                //{
+                                //    for (int m = 0; m < h2.Count; m++)
+                                //        if (h1[i] == h2[j])
+                                //        {
+                                //            if (AlreadyList(triple.Value, h1[i]))
+                                //                triple.Value.Add(h1[i]);
+                                //            break;
+                                //        }
+                                //}
+                                if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
-                                    for (int m = 0; m < h2.Count; m++)
-                                        if (h1[i] == h2[j])
-                                        {
-                                            if (AlreadyList(triple.Value, h1[i]))
-                                                triple.Value.Add(h1[i]);
-                                            break;
-                                        }
+                                    triple.Value.Add(disfs1.FuzzySetName);
                                 }
                             }
                             else
@@ -1002,17 +1052,21 @@ namespace FPRDB.BLL
                             {
                                 DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(tripleOne.Value[i].ToString().Trim());
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
-                                List<Double> h1 = disfs1.getXsForMembership(1.0);
-                                List<Double> h2 = disfs2.getXsForMembership(1.0);
-                                for (int l = 0; l < h1.Count; l++)
+                                //List<Double> h1 = disfs1.getXsForMembership(1.0);
+                                //List<Double> h2 = disfs2.getXsForMembership(1.0);
+                                //for (int l = 0; l < h1.Count; l++)
+                                //{
+                                //    for (int m = 0; m < h2.Count; m++)
+                                //        if (h1[i] == h2[j])
+                                //        {
+                                //            if (AlreadyList(triple.Value, h1[i]))
+                                //                triple.Value.Add(h1[i]);
+                                //            break;
+                                //        }
+                                //}
+                                if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
-                                    for (int m = 0; m < h2.Count; m++)
-                                        if (h1[i] == h2[j])
-                                        {
-                                            if (AlreadyList(triple.Value, h1[i]))
-                                                triple.Value.Add(h1[i]);
-                                            break;
-                                        }
+                                    triple.Value.Add(disfs1.FuzzySetName);
                                 }
                             }
                             else
@@ -1087,7 +1141,6 @@ namespace FPRDB.BLL
         {
 
             FProbTripleBLL triple = new FProbTripleBLL();
-
             for (int i = 0; i < tripleOne.Value.Count; i++)
             {
                 for (int j = 0; j < tripleTwo.Value.Count; j++)
@@ -1100,18 +1153,11 @@ namespace FPRDB.BLL
                             {
                                 DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(tripleOne.Value[i].ToString().Trim());
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
-                                List<Double> h1 = disfs1.getXsForMembership(1.0);
-                                List<Double> h2 = disfs2.getXsForMembership(1.0);
-                                for (int l = 0; l < h1.Count; l++)
+                                if(disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
-                                    for (int m = 0; m < h2.Count; m++)
-                                        if (h1[i] == h2[j])
-                                        {
-                                            if (AlreadyList(triple.Value, h1[i]))
-                                                triple.Value.Add(h1[i]);
-                                            break;
-                                        }
+                                    triple.Value.Add(disfs1.FuzzySetName);
                                 }
+                               
                             }
                             else
                             {
@@ -1138,6 +1184,7 @@ namespace FPRDB.BLL
                                     triple.MinProb.Add(0);
                                     triple.MaxProb.Add(0);
                                     break;
+
                                 default: break;
                             }
 
@@ -1150,7 +1197,6 @@ namespace FPRDB.BLL
                                     triple.Value.Add(tripleOne.Value[i]);
                                     triple.MinProb.Add(tripleOne.MinProb[i] * (1 - tripleTwo.MaxProb[j]));
                                     triple.MaxProb.Add(tripleOne.MaxProb[i] * (1 - tripleTwo.MinProb[j]));
-
                                     break;
 
                                 case "ig":
@@ -1311,7 +1357,7 @@ namespace FPRDB.BLL
         /// <param name="selectedRelation2"></param>
         /// <returns></returns>
         /// 
-        private FProbTupleBLL joinTwoTuple(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
+        private FProbTupleBLL joinTwoTupleIntersect(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
         {
             FProbTupleBLL result = new FProbTupleBLL();
             for(int i = 0; i < tuple1.FproTriples.Count; i++)
@@ -1321,6 +1367,38 @@ namespace FPRDB.BLL
                     if (i == j)
                     {
                         var tampResult = JoinTwoTripleIntersect(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        result.FproTriples.Add(tampResult);
+                    }
+                }
+            }
+            return result;
+        }
+        private FProbTupleBLL joinTwoTupleUnion(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
+        {
+            FProbTupleBLL result = new FProbTupleBLL();
+            for (int i = 0; i < tuple1.FproTriples.Count; i++)
+            {
+                for (int j = 0; j < tuple2.FproTriples.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        var tampResult = JoinTwoTripleUnion(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        result.FproTriples.Add(tampResult);
+                    }
+                }
+            }
+            return result;
+        }
+        private FProbTupleBLL joinTwoTupleExcept(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
+        {
+            FProbTupleBLL result = new FProbTupleBLL();
+            for (int i = 0; i < tuple1.FproTriples.Count; i++)
+            {
+                for (int j = 0; j < tuple2.FproTriples.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        var tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
                         result.FproTriples.Add(tampResult);
                     }
                 }
@@ -1402,6 +1480,51 @@ namespace FPRDB.BLL
                 }
             }
             // nếu có chung khóa thì thực hiện phép hợp dựa vào biểu thức truyền vào.
+            // biến lưu trữ các tuple có khóa trùng
+            var abc1 = new List<FProbTupleBLL>();
+            var abc2 = new List<FProbTupleBLL>();
+            //result select 1 is selectedRelation1
+            //result select 2 is selectedRelation2
+            var list_duplicate = new List<string>();
+
+            for (int i = 0; i < atrriButeRelation0.Count; i++)
+            {
+                if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]))
+                {
+                    list_duplicate.Add(atrriButeRelation0[i]);
+                }
+            }
+            // tìm những tuple ở selectRelation1 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
+            {
+                for (int j = 0; j < selectedRelation1.FproTuples.Count; j++)
+                {
+                    if (selectedRelation1.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    {
+                        abc1.Add(selectedRelation1.FproTuples[j]);
+                    }
+                }
+            }
+            // tìm những tuple ở selectRelation2 có khóa trùng với khóa ở list_duplicate
+            for (int i = 0; i < list_duplicate.Count; i++)
+            {
+                for (int j = 0; j < selectedRelation2.FproTuples.Count; j++)
+                {
+                    if (selectedRelation2.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    {
+                        abc2.Add(selectedRelation2.FproTuples[j]);
+                    }
+                }
+            }
+            for (int i = 0; i < abc1.Count; i++)
+            {
+                for (int j = 0; j < abc2.Count; j++)
+                {
+                    var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
+                }
+            }
+
 
             OperationUnion = string.Empty;
             flagUnion = false;
@@ -1510,7 +1633,7 @@ namespace FPRDB.BLL
             {
                 for(int j = 0; j < abc2.Count; j++)
                 {
-                    var tamp_result = joinTwoTuple(abc1[i], abc2[j], selectedRelation1);
+                    var tamp_result = joinTwoTupleIntersect(abc1[i], abc2[j], selectedRelation1);
                     relationResult.FproTuples.Add(tamp_result);
                 }
             }

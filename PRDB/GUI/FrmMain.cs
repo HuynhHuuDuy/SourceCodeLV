@@ -2563,9 +2563,9 @@ namespace FPRDB.GUI
                     xtraTabControlResultQuery.SelectedTabPageIndex = 1;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                XtraMessageBox.Show(ex.Message);
+                XtraMessageBox.Show("The value of column exists is null");
 
             }
             finally

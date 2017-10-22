@@ -1635,12 +1635,23 @@ namespace FPRDB.BLL
                     }
                 }
             }
-            for(int i = 0; i < abc1.Count; i++)
+            // kiem tra hai table co trung hay không 
+            if (selectedRelation1.RelationName == selectedRelation2.RelationName)
             {
-                for(int j = 0; j < abc2.Count; j++)
+                for (int i = 0; i < abc1.Count; i++)
                 {
-                    var tamp_result = joinTwoTupleIntersect(abc1[i], abc2[j], selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    relationResult.FproTuples.Add(abc1[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < abc1.Count; i++)
+                {
+                    for (int j = 0; j < abc2.Count; j++)
+                    {
+                        var tamp_result = joinTwoTupleIntersect(abc1[i], abc2[j], selectedRelation1);
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
                 }
             }
        
@@ -1708,7 +1719,7 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult1.RelationName = this.selectedRelation1[0].RelationName;
                             this.relationResult1.FproSchema = this.selectedRelation1[0].FproSchema;
                             this.relationResult1 = getRelationBySelectAttribute(this.relationResult1, this.selectedAttribute1);
                         }
@@ -1759,7 +1770,7 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult2.RelationName = this.selectedRelation2[0].RelationName;
                             this.relationResult2.FproSchema = this.selectedRelation2[0].FproSchema;
                             this.relationResult2 = getRelationBySelectAttribute(this.relationResult2, this.selectedAttribute2);
                         }
@@ -1916,7 +1927,7 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult1.RelationName = selectedRelation1[0].RelationName;
                             this.relationResult1.FproSchema = this.selectedRelation1[0].FproSchema;
                             this.relationResult1 = getRelationBySelectAttribute(this.relationResult1, this.selectedAttribute1);
                         }
@@ -1967,7 +1978,7 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult2.RelationName = selectedRelation2[0].RelationName;
                             this.relationResult2.FproSchema = this.selectedRelation2[0].FproSchema;
                             this.relationResult2 = getRelationBySelectAttribute(this.relationResult2, this.selectedAttribute2);
                         }

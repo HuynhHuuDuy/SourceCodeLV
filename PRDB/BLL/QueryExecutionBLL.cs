@@ -1639,13 +1639,13 @@ namespace FPRDB.BLL
             }
             else
             {
-                for (int i = 0; i < abc1.Count; i++)
+                foreach (var item in list_duplicate)
                 {
-                    for (int j = 0; j < abc2.Count; j++)
-                    {
-                        var tamp_result = joinTwoTupleIntersect(abc1[i], abc2[j], selectedRelation1);
-                        relationResult.FproTuples.Add(tamp_result);
-                    }
+                    FProbTupleBLL dataRelation1 = abc1.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
+                    FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
+
+                    var tamp_result = joinTwoTupleIntersect(dataRelation1, dataRelation2, selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
                 }
             }
        

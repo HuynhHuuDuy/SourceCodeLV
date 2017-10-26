@@ -905,12 +905,22 @@ namespace FPRDB.BLL
                     }
                 }
             }
-            for (int i = 0; i < abc1.Count; i++)
+            if (selectedRelation1.RelationName == selectedRelation2.RelationName)
             {
-                for (int j = 0; j < abc2.Count; j++)
+                for (int i = 0; i < abc1.Count; i++)
                 {
-                    var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    relationResult.FproTuples.Add(abc1[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < abc1.Count; i++)
+                {
+                    for (int j = 0; j < abc2.Count; j++)
+                    {
+                        var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
                 }
             }
 
@@ -1516,15 +1526,24 @@ namespace FPRDB.BLL
                     }
                 }
             }
-            for (int i = 0; i < abc1.Count; i++)
+            if (selectedRelation1.RelationName == selectedRelation2.RelationName)
             {
-                for (int j = 0; j < abc2.Count; j++)
+                for (int i = 0; i < abc1.Count; i++)
                 {
-                    var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    relationResult.FproTuples.Add(abc1[i]);
                 }
             }
-
+            else
+            {
+                for (int i = 0; i < abc1.Count; i++)
+                {
+                    for (int j = 0; j < abc2.Count; j++)
+                    {
+                        var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
+                }
+            }
 
             OperationUnion = string.Empty;
             flagUnion = false;

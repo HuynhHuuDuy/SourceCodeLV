@@ -918,8 +918,11 @@ namespace FPRDB.BLL
                 {
                     for (int j = 0; j < abc2.Count; j++)
                     {
-                        var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
-                        relationResult.FproTuples.Add(tamp_result);
+                        if (abc1[i].FproTriples[0].Value[0].Equals(abc2[j].FproTriples[0].Value[0]) ==true)
+                        {
+                            var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
+                            relationResult.FproTuples.Add(tamp_result);
+                        }
                     }
                 }
             }
@@ -963,16 +966,6 @@ namespace FPRDB.BLL
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
                                 List<Double> h1 = disfs1.getXsForMembership(1.0);
                                 List<Double> h2 = disfs2.getXsForMembership(1.0);
-                                //for (int l = 0; l < h1.Count; l++)
-                                //{
-                                //    for (int m = 0; m < h2.Count; m++)
-                                //        if (h1[i] == h2[j])
-                                //        {
-                                //            if (AlreadyList(triple.Value, h1[i]))
-                                //                triple.Value.Add(h1[i]);
-                                //            break;
-                                //        }
-                                //}
                                 if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
                                     triple.Value.Add(disfs1.FuzzySetName);
@@ -1392,7 +1385,7 @@ namespace FPRDB.BLL
                 {
                     if (i == j)
                     {
-                        var tampResult = JoinTwoTripleUnion(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        var tampResult = JoinTwoTripleUnion(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationUnion);
                         result.FproTriples.Add(tampResult);
                     }
                 }
@@ -1408,7 +1401,7 @@ namespace FPRDB.BLL
                 {
                     if (i == j)
                     {
-                        var tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        var tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationDifference);
                         result.FproTriples.Add(tampResult);
                     }
                 }
@@ -1539,11 +1532,16 @@ namespace FPRDB.BLL
                 {
                     for (int j = 0; j < abc2.Count; j++)
                     {
-                        var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
-                        relationResult.FproTuples.Add(tamp_result);
+
+                        if (abc1[i].FproTriples[0].Value[0].Equals(abc2[j].FproTriples[0].Value[0]) == true)
+                        {
+                            var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
+                            relationResult.FproTuples.Add(tamp_result);
+                        }
                     }
+                
                 }
-            }
+             }
 
             OperationUnion = string.Empty;
             flagUnion = false;

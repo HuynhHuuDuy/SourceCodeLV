@@ -905,6 +905,8 @@ namespace FPRDB.BLL
                     }
                 }
             }
+
+            // kiem tra hai table co trung hay không 
             if (selectedRelation1.RelationName == selectedRelation2.RelationName)
             {
                 for (int i = 0; i < abc1.Count; i++)
@@ -914,16 +916,13 @@ namespace FPRDB.BLL
             }
             else
             {
-                for (int i = 0; i < abc1.Count; i++)
+                foreach (var item in list_duplicate)
                 {
-                    for (int j = 0; j < abc2.Count; j++)
-                    {
-                        if (abc1[i].FproTriples[0].Value[0].Equals(abc2[j].FproTriples[0].Value[0]) ==true)
-                        {
-                            var tamp_result = joinTwoTupleExcept(abc1[i], abc2[j], selectedRelation1);
-                            relationResult.FproTuples.Add(tamp_result);
-                        }
-                    }
+                    FProbTupleBLL dataRelation1 = abc1.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
+                    FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
+
+                    var tamp_result = joinTwoTupleExcept(dataRelation1, dataRelation2, selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
                 }
             }
 
@@ -1519,6 +1518,8 @@ namespace FPRDB.BLL
                     }
                 }
             }
+
+            // kiem tra hai table co trung hay không 
             if (selectedRelation1.RelationName == selectedRelation2.RelationName)
             {
                 for (int i = 0; i < abc1.Count; i++)
@@ -1528,20 +1529,15 @@ namespace FPRDB.BLL
             }
             else
             {
-                for (int i = 0; i < abc1.Count; i++)
+                foreach (var item in list_duplicate)
                 {
-                    for (int j = 0; j < abc2.Count; j++)
-                    {
+                    FProbTupleBLL dataRelation1 = abc1.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
+                    FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
 
-                        if (abc1[i].FproTriples[0].Value[0].Equals(abc2[j].FproTriples[0].Value[0]) == true)
-                        {
-                            var tamp_result = joinTwoTupleUnion(abc1[i], abc2[j], selectedRelation1);
-                            relationResult.FproTuples.Add(tamp_result);
-                        }
-                    }
-                
+                    var tamp_result = joinTwoTupleUnion(dataRelation1, dataRelation2, selectedRelation1);
+                    relationResult.FproTuples.Add(tamp_result);
                 }
-             }
+            }
 
             OperationUnion = string.Empty;
             flagUnion = false;

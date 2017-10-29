@@ -610,7 +610,7 @@ namespace FPRDB.BLL
                         }
                         if (S.Contains("except me"))
                         {
-                            int index_Except = S.IndexOf("except ig");
+                            int index_Except = S.IndexOf("except me");
                             query_1 = S.Substring(0, index_Except).Trim();
                             query_2 = S.Substring(index_Except + 9).Trim();
                             OperationDifference = "me";
@@ -1829,7 +1829,7 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult1.RelationName = this.selectedRelation1[0].RelationName;
                             this.relationResult1.FproSchema = this.selectedRelation1[0].FproSchema;
                             this.relationResult1 = getRelationBySelectAttribute(this.relationResult1, this.selectedAttribute1);
                         }
@@ -1880,11 +1880,10 @@ namespace FPRDB.BLL
                                 this.MessageError = Condition.MessageError;
                                 return false;
                             }
-
+                            this.relationResult2.RelationName = this.selectedRelation2[0].RelationName;
                             this.relationResult2.FproSchema = this.selectedRelation2[0].FproSchema;
                             this.relationResult2 = getRelationBySelectAttribute(this.relationResult2, this.selectedAttribute2);
                         }
-                        this.relationResult.FproSchema = this.selectedRelation2[0].FproSchema;
                         this.relationResult = Union1(this.relationResult1, this.relationResult2);
                         return true;
                     }

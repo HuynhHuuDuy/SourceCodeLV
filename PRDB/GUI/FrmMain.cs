@@ -1812,7 +1812,9 @@ namespace FPRDB.GUI
             conjunctionRibbonPageGroup.Visible = true;
             disjunctionRibbonPageGroup.Visible = true;
             differenceRibbonPageGroup.Visible = true;
-            equalityRibbonPageGroup.Visible = true;
+            //edit by Duy 11/11/2017
+            equalityRibbonPageGroup.Visible = false;
+
             operatorRibbonPageGroup.Visible = true;
             excuteQueryribbonPageGroup.Visible = true;
             QueryXtraTabPage.PageEnabled = true;

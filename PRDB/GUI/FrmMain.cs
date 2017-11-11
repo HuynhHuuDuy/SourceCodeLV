@@ -2098,101 +2098,136 @@ namespace FPRDB.GUI
                 int indexFrom = tmpString.IndexOf("from ");
                 int indexWhere = tmpString.IndexOf("where ");
 
-                string[] array = tmp.Split(new char[] { ' ' });
+                int indexLastSelect = tmpString.LastIndexOf("select ");
+                int indexLastFrom = tmpString.LastIndexOf("from ");
+                int indexLastWhere = tmpString.LastIndexOf("where ");
 
-                for (int i = 0; i < array.Length; i++)
+                //string[] array = tmp.Split(new char[] { ' ' });
+
+                //for (int i = 0; i < array.Length; i++)
+                //{
+                //    if (Operator.ToList().Contains(array[i].ToLower()))
+                //    {
+                //        int count = 0;
+                //        for (int j = 0; j < i; j++)
+                //        {
+                //            count += array[j].Length + 1;
+                //        }
+
+                //        memoEditTxtQuery.Select(count, array[i].Length + 1);
+                //        memoEditTxtQuery.SelectionColor = Color.Blue;
+                //    }
+                //}
+
+                if (indexSelect != -1)
                 {
-                    if (Operator.ToList().Contains(array[i].ToLower()))
-                    {
-                        int count = 0;
-                        for (int j = 0; j < i; j++)
-                        {
-                            count += array[j].Length + 1;
-                        }
-
-                        memoEditTxtQuery.Select(count, array[i].Length + 1);
-                        memoEditTxtQuery.SelectionColor = Color.Blue;
-                    }
+                    memoEditTxtQuery.Select(indexSelect, 6);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                
-                int indexNaturalJoin = tmp.IndexOf(" natural join");
-                if (tmp.IndexOf(" natural join in") != -1)
+                if(indexFrom != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" natural join in");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.Select(indexFrom, 4);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if(indexWhere != -1)
+                {
+                    memoEditTxtQuery.Select(indexWhere, 5);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (indexLastSelect != -1)
+                {
+                    memoEditTxtQuery.Select(indexLastSelect, 6);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (indexLastFrom != -1)
+                {
+                    memoEditTxtQuery.Select(indexLastFrom, 4);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+                if (indexLastWhere != -1)
+                {
+                    memoEditTxtQuery.Select(indexLastWhere, 5);
+                    memoEditTxtQuery.SelectionColor = Color.Blue;
+                }
+
+                int indexNaturalJoin = tmp.IndexOf(" natural join");
+                if (tmp.IndexOf(" natural join ⊗_in") != -1)
+                {
+                    indexNaturalJoin = tmp.IndexOf(" natural join ⊗_in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 19);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
                 else
-                    if (tmp.IndexOf(" natural join ig") != -1)
+                    if (tmp.IndexOf(" natural join ⊗_ig") != -1)
                     {
 
-                        indexNaturalJoin = tmp.IndexOf(" natural join ig");
-                        memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                        indexNaturalJoin = tmp.IndexOf(" natural join ⊗_ig");
+                        memoEditTxtQuery.Select(indexNaturalJoin, 19);
                         memoEditTxtQuery.SelectionColor = Color.Blue;
 
                     }
                 // kiem tra tu khoa va to xanh tu khoa do
-                if (tmp.IndexOf(" natural join me") != -1)
+                if (tmp.IndexOf(" natural join ⊗_me") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" natural join me");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" natural join ⊗_me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 19);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if(tmp.IndexOf(" except in")!= -1)
+                if(tmp.IndexOf(" except ⊖_in") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" except in");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" except ⊖_in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 12);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if (tmp.IndexOf(" except ig") != -1)
+                if (tmp.IndexOf(" except ⊖_ig") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" except ig");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" except ⊖_ig");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 12);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if (tmp.IndexOf(" except me") != -1)
+                if (tmp.IndexOf(" except ⊖_me") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" except me");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" except ⊖_me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 12);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if (tmp.IndexOf(" intersect in") != -1)
+                if (tmp.IndexOf(" intersect ⊗_in") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" intersect in");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" intersect ⊗_in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 15);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
 
-                if (tmp.IndexOf(" intersect ig") != -1)
+                if (tmp.IndexOf(" intersect ⊗_ig") != -1)
                 {
                     indexNaturalJoin = tmp.IndexOf(" intersect ig");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    memoEditTxtQuery.Select(indexNaturalJoin, 15);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
 
-                if (tmp.IndexOf(" intersect me") != -1)
+                if (tmp.IndexOf(" intersect ⊗_me") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" intersect me");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" intersect ⊗_me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 15);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
 
-                if (tmp.IndexOf(" union in") != -1)
+                if (tmp.IndexOf(" union ⊕_in") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" union in");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" union ⊕_in");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 11);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if (tmp.IndexOf(" union ig") != -1)
+                if (tmp.IndexOf(" union ⊕_ig") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" union ig");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" union ⊕_ig");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 11);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
-                if (tmp.IndexOf(" union me") != -1)
+                if (tmp.IndexOf(" union ⊕_me") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" union me");
-                    memoEditTxtQuery.Select(indexNaturalJoin, 17);
+                    indexNaturalJoin = tmp.IndexOf(" union ⊕_me");
+                    memoEditTxtQuery.Select(indexNaturalJoin, 11);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }
 

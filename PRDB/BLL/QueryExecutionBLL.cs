@@ -236,26 +236,33 @@ namespace FPRDB.BLL
             {
                 relations = relationsString.Split(seperator, StringSplitOptions.RemoveEmptyEntries);
             }
-            else
-                if (relationsString.Contains(" natural join in") || relationsString.Contains(" natural join ig") || relationsString.Contains(" natural join me"))
+            else if (relationsString.Contains(" natural join ⊗_in") || relationsString.Contains(" natural join ⊗_ig") || relationsString.Contains(" natural join ⊗_me"))
             {
                 relations = new string[2];
 
-                if (relationsString.Contains(" natural join in"))
+                if (relationsString.Contains(" natural join ⊗_in"))
                 {
+                    relationsString = relationsString.Replace(" natural join ⊗_in", " natural join in");
+                    valueString = valueString.Replace(" natural join ⊗_in", " natural join in");
+
                     relations[0] = relationsString.Substring(0, relationsString.IndexOf("natural join in")).Trim();
                     relations[1] = relationsString.Substring(relationsString.IndexOf("natural join in") + 15).Trim();
                     OperationNaturalJoin = "in";
                 }
-                else
-                    if (relationsString.Contains(" natural join ig"))
+                else if (relationsString.Contains(" natural join ⊗_ig"))
                 {
+                    relationsString = relationsString.Replace(" natural join ⊗_ig", " natural join ig");
+                    valueString = valueString.Replace(" natural join ⊗_ig", " natural join ig");
+
                     relations[0] = relationsString.Substring(0, relationsString.IndexOf("natural join ig")).Trim();
                     relations[1] = relationsString.Substring(relationsString.IndexOf("natural join ig") + 15).Trim();
                     OperationNaturalJoin = "ig";
                 }
                 else
                 {
+                    relationsString = relationsString.Replace(" natural join ⊗_me", " natural join me");
+                    valueString = valueString.Replace(" natural join ⊗_me", " natural join me");
+
                     relations[0] = relationsString.Substring(0, relationsString.IndexOf("natural join me")).Trim();
                     relations[1] = relationsString.Substring(relationsString.IndexOf("natural join me") + 15).Trim();
                     OperationNaturalJoin = "me";
@@ -277,6 +284,7 @@ namespace FPRDB.BLL
                     }
 
                 }
+
                 flagNaturalJoin = true;
             }
             else
@@ -567,78 +575,114 @@ namespace FPRDB.BLL
                 //kiểm tra có tồn tại phép trừ, hợp, giao trong câu truy vấn hay không
                 if (S.Contains("union") || S.Contains("except") || S.Contains("intersect"))
                 {
+                    //union use strategy ⊕_ig  ⊕_in  ⊕_me
                     if (S.Contains("union"))
                     {
-                        if (S.Contains("union in"))
+                        if (S.Contains("union ⊕_in"))
                         {
+                            S = S.Replace("union ⊕_in", "union in");
+
                             int index_Union = S.IndexOf("union in");
                             query_1 = S.Substring(0, index_Union).Trim();
                             query_2 = S.Substring(index_Union + 8).Trim();
                             OperationUnion = "in";
                         }
-                        if (S.Contains("union ig"))
+                        else if (S.Contains("union ⊕_ig"))
                         {
+                            S = S.Replace("union ⊕_ig", "union ig");
+
                             int index_Union = S.IndexOf("union ig");
                             query_1 = S.Substring(0, index_Union).Trim();
                             query_2 = S.Substring(index_Union + 8).Trim();
                             OperationUnion = "ig";
                         }
-                        if (S.Contains("union me"))
+                        else if (S.Contains("union ⊕_me"))
                         {
+                            S = S.Replace("union ⊕_me", "union me");
+
                             int index_Union = S.IndexOf("union me");
                             query_1 = S.Substring(0, index_Union).Trim();
                             query_2 = S.Substring(index_Union + 8).Trim();
                             OperationUnion = "me";
                         }
+                        else
+                        {
+                            MessageError = "Incorrect syntax near 'union'.";
+                            return false;
+                        }
                         flagUnion = true;
                     }
+                    //union use strategy ⊖_ig  ⊖_in  ⊖_me
                     if (S.Contains("except"))
                     {
-                        if (S.Contains("except in"))
+                        if (S.Contains("except ⊖_in"))
                         {
+                            S = S.Replace("except ⊖_in", "except in");
+
                             int index_Except = S.IndexOf("except in");
                             query_1 = S.Substring(0, index_Except).Trim();
                             query_2 = S.Substring(index_Except + 9).Trim();
                             OperationDifference = "in";
                         }
-                        if (S.Contains("except ig"))
+                        else if (S.Contains("except ⊖_ig"))
                         {
+                            S = S.Replace("except ⊖_ig", "except ig");
+
                             int index_Except = S.IndexOf("except ig");
                             query_1 = S.Substring(0, index_Except).Trim();
                             query_2 = S.Substring(index_Except + 9).Trim();
                             OperationDifference = "ig";
                         }
-                        if (S.Contains("except me"))
+                        else if (S.Contains("except ⊖_me"))
                         {
+                            S = S.Replace("except ⊖_me", "except me");
+
                             int index_Except = S.IndexOf("except me");
                             query_1 = S.Substring(0, index_Except).Trim();
                             query_2 = S.Substring(index_Except + 9).Trim();
                             OperationDifference = "me";
                         }
+                        else
+                        {
+                            MessageError = "Incorrect syntax near 'except'.";
+                            return false;
+                        }
                         flagDifference = true;
                     }
+                    //union use strategy ⊗_ig  ⊗_in  ⊗_me
                     if (S.Contains("intersect"))
                     {
-                        if (S.Contains("intersect in"))
+                        if (S.Contains("intersect ⊗_in"))
                         {
+                            S = S.Replace("intersect ⊗_in", "intersect in");
+
                             int index_intersect = S.IndexOf("intersect in");
                             query_1 = S.Substring(0, index_intersect).Trim();
                             query_2 = S.Substring(index_intersect + 12).Trim();
                             OperationIntersect = "in";
                         }
-                        if (S.Contains("intersect ig"))
+                        else if (S.Contains("intersect ⊗_ig"))
                         {
+                            S = S.Replace("intersect ⊗_ig", "intersect ig");
+
                             int index_intersect = S.IndexOf("intersect ig");
                             query_1 = S.Substring(0, index_intersect);
                             query_2 = S.Substring(index_intersect + 12).Trim();
                             OperationIntersect = "ig";
                         }
-                        if (S.Contains("intersect me"))
+                        else if (S.Contains("intersect ⊗_me"))
                         {
+                            S = S.Replace("intersect ⊗_me", "intersect me");
+
                             int index_intersect = S.IndexOf("intersect me");
                             query_1 = S.Substring(0, index_intersect).Trim();
                             query_2 = S.Substring(index_intersect + 12).Trim();
                             OperationIntersect = "me";
+                        }
+                        else
+                        {
+                            MessageError = "Incorrect syntax near 'intersect'.";
+                            return false;
                         }
                         flagIntersect = true;
                     }

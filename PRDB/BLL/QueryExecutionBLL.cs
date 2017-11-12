@@ -1410,9 +1410,21 @@ namespace FPRDB.BLL
             {
                 for(int j = 0; j < tuple2.FproTriples.Count; j++)
                 {
+                    var minProTuple1 = tuple1.FproTriples[i].MinProb[0];
+                    var maxProTuple1 = tuple1.FproTriples[i].MaxProb[0];
+                    var minProTuple2 = tuple2.FproTriples[i].MinProb[0];
+                    var maxProTuple2 = tuple2.FproTriples[i].MaxProb[0];
                     if (i == j)
                     {
-                        var tampResult = JoinTwoTripleIntersect(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        FProbTripleBLL tampResult = new FProbTripleBLL();
+                        if (minProTuple1 != 1 || maxProTuple1 != 1 || minProTuple2 != 1 || maxProTuple2 != 1)
+                        {
+                            tampResult = JoinTwoTripleIntersect(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationIntersect);
+                        }
+                        else
+                        {
+                            tampResult = tuple1.FproTriples[i];
+                        }
                         result.FproTriples.Add(tampResult);
                     }
                 }
@@ -1426,9 +1438,21 @@ namespace FPRDB.BLL
             {
                 for (int j = 0; j < tuple2.FproTriples.Count; j++)
                 {
+                    var minProTuple1 = tuple1.FproTriples[i].MinProb[0];
+                    var maxProTuple1 = tuple1.FproTriples[i].MaxProb[0];
+                    var minProTuple2 = tuple2.FproTriples[i].MinProb[0];
+                    var maxProTuple2 = tuple2.FproTriples[i].MaxProb[0];
                     if (i == j)
                     {
-                        var tampResult = JoinTwoTripleUnion(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationUnion);
+                        FProbTripleBLL tampResult = new FProbTripleBLL();
+                        if (minProTuple1 != 1 || maxProTuple1 != 1 || minProTuple2 != 1 || maxProTuple2 != 1)
+                        {
+                            tampResult = JoinTwoTripleUnion(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationUnion);
+                        }
+                        else
+                        {
+                            tampResult = tuple1.FproTriples[i];
+                        }
                         result.FproTriples.Add(tampResult);
                     }
                 }
@@ -1442,9 +1466,21 @@ namespace FPRDB.BLL
             {
                 for (int j = 0; j < tuple2.FproTriples.Count; j++)
                 {
+                    var minProTuple1 = tuple1.FproTriples[i].MinProb[0];
+                    var maxProTuple1 = tuple1.FproTriples[i].MaxProb[0];
+                    var minProTuple2 = tuple2.FproTriples[i].MinProb[0];
+                    var maxProTuple2 = tuple2.FproTriples[i].MaxProb[0];
                     if (i == j)
                     {
-                        var tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationDifference);
+                        FProbTripleBLL tampResult = new FProbTripleBLL();
+                        if (minProTuple1 !=1 || maxProTuple1 !=1 || minProTuple2 !=1 || maxProTuple2 != 1)
+                        {
+                            tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationDifference);
+                        }
+                        else
+                        {
+                            tampResult = tuple1.FproTriples[i];
+                        }
                         result.FproTriples.Add(tampResult);
                     }
                 }

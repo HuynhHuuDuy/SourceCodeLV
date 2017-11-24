@@ -1199,11 +1199,11 @@ namespace FPRDB.BLL
                             {
                                 DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(tripleOne.Value[i].ToString().Trim());
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
-                                if(disfs1.FuzzySetName == disfs2.FuzzySetName)
+                                if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
                                     triple.Value.Add(disfs1.FuzzySetName);
                                 }
-                               
+
                             }
                             else
                             {
@@ -1406,9 +1406,9 @@ namespace FPRDB.BLL
         private FProbTupleBLL joinTwoTupleIntersect(FProbTupleBLL tuple1, FProbTupleBLL tuple2, FProbRelationBLL relation)
         {
             FProbTupleBLL result = new FProbTupleBLL();
-            for(int i = 0; i < tuple1.FproTriples.Count; i++)
+            for (int i = 0; i < tuple1.FproTriples.Count; i++)
             {
-                for(int j = 0; j < tuple2.FproTriples.Count; j++)
+                for (int j = 0; j < tuple2.FproTriples.Count; j++)
                 {
                     var minProTuple1 = tuple1.FproTriples[i].MinProb[0];
                     var maxProTuple1 = tuple1.FproTriples[i].MaxProb[0];
@@ -1473,7 +1473,7 @@ namespace FPRDB.BLL
                     if (i == j)
                     {
                         FProbTripleBLL tampResult = new FProbTripleBLL();
-                        if (minProTuple1 !=1 || maxProTuple1 !=1 || minProTuple2 !=1 || maxProTuple2 != 1)
+                        if (minProTuple1 != 1 || maxProTuple1 != 1 || minProTuple2 != 1 || maxProTuple2 != 1)
                         {
                             tampResult = JoinTwoTripleDiffe(tuple1.FproTriples[i], tuple2.FproTriples[j], relation.FproSchema.FproAttributes[i], this.OperationDifference);
                         }
@@ -1692,7 +1692,7 @@ namespace FPRDB.BLL
             //result select 1 is selectedRelation1
             //result select 2 is selectedRelation2
             var list_duplicate = new List<string>();
-            
+
             for (int i = 0; i < atrriButeRelation0.Count; i++)
             {
                 if (AlreadyList(atrributeRelation1, atrriButeRelation0[i]))
@@ -1703,9 +1703,9 @@ namespace FPRDB.BLL
             // tìm những tuple ở selectRelation1 có khóa trùng với khóa ở list_duplicate
             for (int i = 0; i < list_duplicate.Count; i++)
             {
-                for (int j = 0; j < selectedRelation1.FproTuples.Count;j++)
+                for (int j = 0; j < selectedRelation1.FproTuples.Count; j++)
                 {
-                    if(selectedRelation1.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
+                    if (selectedRelation1.FproTuples[j].FproTriples[0].Value[0].ToString() == list_duplicate[i])
                     {
                         abc1.Add(selectedRelation1.FproTuples[j]);
                     }
@@ -1741,7 +1741,7 @@ namespace FPRDB.BLL
                     relationResult.FproTuples.Add(tamp_result);
                 }
             }
-       
+
             OperationIntersect = string.Empty;
             flagIntersect = false;
             return relationResult;
@@ -1755,7 +1755,7 @@ namespace FPRDB.BLL
             try
             {
                 string S = this.queryString;
-               if (!QueryAnalyze()) return false;
+                if (!QueryAnalyze()) return false;
                 // kiểm tra câu truy vấn có thực thi phép trừ, giao, hợp  hay không
                 if (S.Contains("except") || S.Contains("union") || S.Contains("intersect"))
                 {
@@ -2123,10 +2123,31 @@ namespace FPRDB.BLL
                     }
 
                 }
+                // kiem tra va loai bo cac tuple co triple ma minprob va maxprob = 0 
+                for (int i = 0; i < this.relationResult.FproTuples.Count; i++)
+                {
+                    if (checkTuple(this.relationResult.FproTuples[i]) != true)
+                    {
+                        this.relationResult.FproTuples.Remove(this.relationResult.FproTuples[i]);
+                    }
+                }
             }
             catch
             {
                 return false;
+            }
+            return true;
+        }
+        private bool checkTuple(FProbTupleBLL tuple)
+        {
+            for (int i = 0; i < tuple.FproTriples.Count; i++)
+            {
+                if (tuple.FproTriples[i].MaxProb[0] == 0 && tuple.FproTriples[i].MinProb[0] == 0)
+                {
+                    return false;
+                    break;
+                }
+
             }
             return true;
         }

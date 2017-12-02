@@ -973,7 +973,11 @@ namespace FPRDB.BLL
                     FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
 
                     var tamp_result = joinTwoTupleExcept(dataRelation1, dataRelation2, selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    if(tamp_result.FproTriples.Count == selectedRelation1.FproTuples[0].FproTriples.Count)
+                    {
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
+                   
                 }
             }
 
@@ -1014,8 +1018,8 @@ namespace FPRDB.BLL
                             {
                                 DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(tripleOne.Value[i].ToString().Trim());
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
-                                List<Double> h1 = disfs1.getXsForMembership(1.0);
-                                List<Double> h2 = disfs2.getXsForMembership(1.0);
+                                List<Double> h1 = disfs1.getXsForMembership(0.1);
+                                List<Double> h2 = disfs2.getXsForMembership(0.1);
                                 if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
                                     triple.Value.Add(disfs1.FuzzySetName);
@@ -1105,18 +1109,6 @@ namespace FPRDB.BLL
                             {
                                 DiscreteFuzzySetBLL disfs1 = DiscreteFuzzySetBLL.GetByName(tripleOne.Value[i].ToString().Trim());
                                 DiscreteFuzzySetBLL disfs2 = DiscreteFuzzySetBLL.GetByName(tripleTwo.Value[j].ToString().Trim());
-                                //List<Double> h1 = disfs1.getXsForMembership(1.0);
-                                //List<Double> h2 = disfs2.getXsForMembership(1.0);
-                                //for (int l = 0; l < h1.Count; l++)
-                                //{
-                                //    for (int m = 0; m < h2.Count; m++)
-                                //        if (h1[i] == h2[j])
-                                //        {
-                                //            if (AlreadyList(triple.Value, h1[i]))
-                                //                triple.Value.Add(h1[i]);
-                                //            break;
-                                //        }
-                                //}
                                 if (disfs1.FuzzySetName == disfs2.FuzzySetName)
                                 {
                                     triple.Value.Add(disfs1.FuzzySetName);
@@ -1432,7 +1424,10 @@ namespace FPRDB.BLL
                         {
                             tampResult = tuple1.FproTriples[i];
                         }
-                        result.FproTriples.Add(tampResult);
+                        if (tampResult != null)
+                        {
+                            result.FproTriples.Add(tampResult);
+                        }
                     }
                 }
             }
@@ -1460,7 +1455,10 @@ namespace FPRDB.BLL
                         {
                             tampResult = tuple1.FproTriples[i];
                         }
-                        result.FproTriples.Add(tampResult);
+                        if (tampResult != null)
+                        {
+                            result.FproTriples.Add(tampResult);
+                        }
                     }
                 }
             }
@@ -1488,7 +1486,11 @@ namespace FPRDB.BLL
                         {
                             tampResult = tuple1.FproTriples[i];
                         }
-                        result.FproTriples.Add(tampResult);
+                        if(tampResult != null)
+                        {
+                            result.FproTriples.Add(tampResult);
+                        }
+                 
                     }
                 }
             }
@@ -1622,7 +1624,10 @@ namespace FPRDB.BLL
                     FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
 
                     var tamp_result = joinTwoTupleUnion(dataRelation1, dataRelation2, selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    if (tamp_result.FproTriples.Count == selectedRelation1.FproTuples[0].FproTriples.Count)
+                    {
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
                 }
             }
 
@@ -1745,7 +1750,10 @@ namespace FPRDB.BLL
                     FProbTupleBLL dataRelation2 = abc2.Where(i => i.FproTriples[0].Value[0].Equals(item)).FirstOrDefault();
 
                     var tamp_result = joinTwoTupleIntersect(dataRelation1, dataRelation2, selectedRelation1);
-                    relationResult.FproTuples.Add(tamp_result);
+                    if (tamp_result.FproTriples.Count == selectedRelation1.FproTuples[0].FproTriples.Count)
+                    {
+                        relationResult.FproTuples.Add(tamp_result);
+                    }
                 }
             }
 
@@ -2133,7 +2141,7 @@ namespace FPRDB.BLL
                 // kiem tra va loai bo cac tuple co triple ma minprob va maxprob = 0 
                 for (int i = 0; i < this.relationResult.FproTuples.Count; i++)
                 {
-                    if (checkTuple(this.relationResult.FproTuples[i]) != true)
+                    if (checkTuple(this.relationResult.FproTuples[i]) == false)
                     {
                         this.relationResult.FproTuples.Remove(this.relationResult.FproTuples[i]);
                     }
@@ -2152,9 +2160,15 @@ namespace FPRDB.BLL
                 if (tuple.FproTriples[i].MaxProb[0] == 0 && tuple.FproTriples[i].MinProb[0] == 0)
                 {
                     return false;
-                    break;
                 }
 
+            }
+            for(int i = 0; i < tuple.FproTriples.Count; i++)
+            {
+                if (tuple.FproTriples[i] == null)
+                {
+                    return false;
+                }
             }
             return true;
         }

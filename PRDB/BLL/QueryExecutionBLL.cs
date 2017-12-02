@@ -572,6 +572,7 @@ namespace FPRDB.BLL
             try
             {
                 string S = this.queryString;
+                string keyWord = "";
                 //kiểm tra có tồn tại phép trừ, hợp, giao trong câu truy vấn hay không
                 if (S.Contains("union") || S.Contains("except") || S.Contains("intersect"))
                 {
@@ -610,6 +611,7 @@ namespace FPRDB.BLL
                             MessageError = "Incorrect syntax near 'union'.";
                             return false;
                         }
+                        keyWord = "union";
                         flagUnion = true;
                     }
                     //union use strategy ⊖_ig  ⊖_in  ⊖_me
@@ -647,6 +649,7 @@ namespace FPRDB.BLL
                             MessageError = "Incorrect syntax near 'except'.";
                             return false;
                         }
+                        keyWord = "except";
                         flagDifference = true;
                     }
                     //union use strategy ⊗_ig  ⊗_in  ⊗_me
@@ -684,6 +687,7 @@ namespace FPRDB.BLL
                             MessageError = "Incorrect syntax near 'intersect'.";
                             return false;
                         }
+                        keyWord = "intersect";
                         flagIntersect = true;
                     }
                     if (!this.CheckStringQuery(query_1))//nếu câu truy vấn không hợp lệ (vị trí các từ select from where hay có chưa ký tự đặc biệt)
@@ -719,6 +723,9 @@ namespace FPRDB.BLL
                     //(điều kiện chọn)
                     this.conditionString1 = GetCondition(query_1);// điều kiện truy vấn
                     this.conditionString2 = GetCondition(query_2);
+
+                    //check query can execute union, intersect, except
+                    CheckTwoTableRightCondition(keyWord, this.selectedAttribute1, this.selectedAttribute2);
 
                 }
                 else
@@ -2149,6 +2156,38 @@ namespace FPRDB.BLL
                 }
 
             }
+            return true;
+        }
+
+        private bool CheckTwoTableRightCondition(string key, 
+            List<FProbAttributeBLL> selectedAttribute1, List<FProbAttributeBLL> selectedAttribute2)
+        {
+            int d = 0;
+            for(int i= 0; i< selectedAttribute1.Count; i++)
+            {
+
+                if(selectedAttribute1[i].PrimaryKey != selectedAttribute2[i].PrimaryKey)
+                {
+                    d = 1;
+                    break;
+                }
+                if(selectedAttribute1[i].Description != selectedAttribute2[i].Description)
+                {
+                    d = 1;
+                    break;
+                }
+                if(selectedAttribute1[i].FproDataType.DataType != selectedAttribute2[i].FproDataType.DataType)
+                {
+                    d = 1;
+                    break;
+                }
+            }
+            if (d == 1)
+            {
+                MessageError = "No tuple satisfies the condition";
+                return false;
+            }
+
             return true;
         }
     }

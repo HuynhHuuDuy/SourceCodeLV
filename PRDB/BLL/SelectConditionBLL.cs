@@ -852,7 +852,7 @@ namespace FPRDB.BLL
             }
 
             maxProb = 1 > maxProb ? maxProb : 1; // check maxProb
-            return (String.Format("[{0},{1}]", minProb, maxProb));
+             return (String.Format("[{0},{1}]", minProb, maxProb));
         }
         /// <summary>
         /// Important!, get data following prob interval

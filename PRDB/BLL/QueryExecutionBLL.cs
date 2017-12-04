@@ -2087,6 +2087,12 @@ namespace FPRDB.BLL
                             this.selectedRelations[0] = Descartes(this.selectedRelations[0], this.selectedRelations[1]);
                         else
                             this.selectedRelations[0] = NaturalJoin(this.selectedRelations[0], this.selectedRelations[1]);
+                        foreach (FProbAttributeBLL attr in this.selectedRelations[0].FproSchema.FproAttributes)
+                        {
+                            if (!attr.AttributeName.Contains("."))
+                                attr.AttributeName = String.Format("{0}.{1}", this.selectedRelations[0].RelationName, attr.AttributeName);
+                        }
+
                     }
                     else
                     {

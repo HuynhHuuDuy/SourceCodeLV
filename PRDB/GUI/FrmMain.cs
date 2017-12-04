@@ -2202,7 +2202,7 @@ namespace FPRDB.GUI
 
                 if (tmp.IndexOf(" intersect ⊗_ig") != -1)
                 {
-                    indexNaturalJoin = tmp.IndexOf(" intersect ig");
+                    indexNaturalJoin = tmp.IndexOf(" intersect ⊗_ig");
                     memoEditTxtQuery.Select(indexNaturalJoin, 15);
                     memoEditTxtQuery.SelectionColor = Color.Blue;
                 }

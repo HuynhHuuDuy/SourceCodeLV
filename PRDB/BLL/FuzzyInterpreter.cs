@@ -13,7 +13,7 @@ namespace FPRDB.BLL
         {
             DiscreteFuzzySetBLL discFS = new DiscreteFuzzySetBLL();
             discFS.FuzzySetName = contFS.FuzzySetName;
-            for (double val = beginPoint; val <= contFS.BottomRight; val+=epsilon)
+            for (double val = beginPoint; val <= contFS.BottomRight; val += epsilon)
             {
                 double mbs = contFS.GetMembershipAt(val);
                 discFS.AddPoint(val, mbs);
@@ -209,10 +209,15 @@ namespace FPRDB.BLL
         }
         public double interpreteForContFS(ContinuousFuzzySetBLL contFS1, ContinuousFuzzySetBLL contFS2, string rel)
         {
-            double epsilon = 0.1;
+            int everageNumPoint = 20;
+            //double epsilon = 0.1;
             double beginPoint1 = contFS1.BottomLeft;
-            DiscreteFuzzySetBLL discFS1 = discretize(contFS1, beginPoint1, epsilon);
             double beginPoint2 = contFS2.BottomLeft;
+
+            double epsilon = (beginPoint1 + beginPoint2) / everageNumPoint;
+
+            DiscreteFuzzySetBLL discFS1 = discretize(contFS1, beginPoint1, epsilon);
+
             DiscreteFuzzySetBLL discFS2 = discretize(contFS2, beginPoint2, epsilon);
             return interpreteForDiscFS(discFS1, discFS2, rel);
         }
